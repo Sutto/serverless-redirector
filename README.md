@@ -1,24 +1,15 @@
 # ServerlessRedirector
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/serverless_redirector`. To experiment with that code, run `bin/console` for an interactive prompt.
+**NB:** This is WIP software, and not yet ready for public consuption.
 
-TODO: Delete this and the text above, and describe your gem
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'serverless_redirector'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
+Install the tool as:
 
     $ gem install serverless_redirector
+
+And you'll then be able to invoke the serverless redirector as needed.
 
 ## Usage
 
@@ -32,7 +23,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/serverless_redirector. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/Sutto/serverless-redirector. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 
 ## License
