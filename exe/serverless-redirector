@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+
+require 'thor'
+require 'serverless_redirector'
+
+class ServerlessRedirectorCLI < Thor
+
+  desc "sync MANIFEST_PATH DESTINATION_URI", "syncs URLs in the manifest path to the destination path."
+  method_options dry_run: :boolean, log_path: :string
+  def sync(manifest_path, destination_uri)
+    controller = ServerlessRedirector::Controller.new(options.merge(manifest_path: manifest_path, destination_uri: destination_uri))
+    controller.invoke!
+  end
+
+  desc "print MANIFEST_PATH", "Prints the manifest details and what it means"
+  def print(manifest_path)
+    manifest = ServerlessRedirector::Manifest.load_file! manifest_path
+    size = manifest.redirects.map { |r| r.path.length }.max
+    manifest.redirects.each do |redirect|
+      puts "#{redirect.path.ljust(size)} - #{redirect.url}"
+    end
+  end
+
+end
+
+ServerlessRedirectorCLI.start

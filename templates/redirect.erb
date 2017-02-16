@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang=en>
+  <head>
+    <meta charset=utf-8>
+    <title>Redirect</title>
+    <meta http-equiv="refresh" content="1;url=<%= url %>">
+    <script type="text/javascript">
+        window.location.href = "<%= url %>"
+    </script>
+  </head>
+  <body>
+    <p>Redirecting you to <a href="<%= url %>"><%= url %></a>...</p>
+  </body>
+</html>
