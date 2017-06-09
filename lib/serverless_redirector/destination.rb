@@ -98,7 +98,10 @@ module ServerlessRedirector
 
     def bucket
       @bucket ||= begin
-        resource = Aws::S3::Resource.new
+        client = Aws::S3::Client.new
+        region = client.get_bucket_location(bucket: bucket_name).location_constraint
+        regional_client = Aws::S3::Client.new(region: region)
+        resource = Aws::S3::Resource.new(client: regional_client)
         resource.bucket bucket_name
       end
     end
