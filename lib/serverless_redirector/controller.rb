@@ -12,18 +12,21 @@ module ServerlessRedirector
     attr_accessor :destination_uri, # Target for the syncing...
                   :manifest_path,   # Where can we find out manifest?
                   :log_path,        # If present, where do we log? (STDOUT, by default)
-                  :dry_run          # Is this a dry run?
+                  :dry_run,         # Is this a dry run?
+                  :skip_deletes,    # Deletes have a special ordering to take place to avoid downtime.
 
     def initialize(options = {})
       @dry_run = false
       @log_path = nil
       @destination_uri = nil
       @manifest_path = nil
+      @skip_deletes = false
       unpack_options options
     end
 
     def unpack_options(options)
       @dry_run = !!options[:dry_run] if options.key?(:dry_run)
+      @skip_deletes = !!options[:skip_deletes] if options.key?(:skip_deletes)
 
       @manifest_path   = options.fetch(:manifest_path) if options.key?(:manifest_path)
       @log_path        = options.fetch(:log_path) if options.key?(:log_path)
@@ -41,7 +44,7 @@ module ServerlessRedirector
       manifest = create_manifest
       destination = create_destination
 
-      syncer = ServerlessRedirector::Syncer.new(manifest, destination, logger)
+      syncer = ServerlessRedirector::Syncer.new(manifest, destination, logger, skip_deletes)
       syncer.run dry_run
     end
 

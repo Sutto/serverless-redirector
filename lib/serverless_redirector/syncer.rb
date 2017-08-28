@@ -5,12 +5,13 @@ require 'yaml'
 module ServerlessRedirector
   class Syncer
 
-    attr_reader :manifest, :destination, :logger
+    attr_reader :manifest, :destination, :logger, :skip_deletes
 
-    def initialize(manifest, destination, logger = ::Logger.new(STDOUT))
+    def initialize(manifest, destination, logger = ::Logger.new(STDOUT), skip_deletes = false)
       @manifest = manifest
       @destination = destination
       @logger = logger
+      @skip_deletes = skip_deletes
     end
 
     def run(dry_run = false)
@@ -39,7 +40,9 @@ module ServerlessRedirector
       changed = (targets.keys & contents.keys).select { |k| targets[k] != contents[k] }.map { |k| targets[k] }
 
       [].tap do |operations|
-        operations.concat removed.map { |r| Operations::RemoveRedirect.new(r) }
+        unless skip_deletes
+          operations.concat removed.map { |r| Operations::RemoveRedirect.new(r) }
+        end
         operations.concat added.map { |r| Operations::CreateRedirect.new(r) }
         operations.concat changed.map { |r| Operations::UpdateDestination.new(r) }
       end

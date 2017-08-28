@@ -1,4 +1,5 @@
 require 'aws-sdk'
+require 'cgi'
 
 module ServerlessRedirector
   class Destination
@@ -61,6 +62,9 @@ module ServerlessRedirector
       @uri = uri
       @bucket_name = uri.host
       @prefix = uri.path.to_s.empty? ? nil : ::File.join(uri.path[1..-1], "")
+      @options = CGI.parse(uri.query || "").each_with_object({}) do |(key, values), out|
+        out[key] = values.lastß
+      end
     end
 
     def existing
@@ -69,7 +73,7 @@ module ServerlessRedirector
       end.map do |o|
         path = o.key.dup
         path.gsub! /^#{Regexp.escape(prefix)}\/?/, '' if prefix
-        ServerlessRedirector::Manifest::Redirect.new 'path' => path, 'url' => o.metadata["x-redirector-target"].to_s
+        ServerlessRedirector::Manifest::Redirect.new 'path' => path, 'url' => o.metadata[REDIRECT_HEADER_KEY].to_s
       end
     end
 
@@ -91,7 +95,6 @@ module ServerlessRedirector
           REDIRECT_HEADER_KEY => location
         }
       })
-      puts "WRITTEN"
     end
 
     protected
@@ -99,8 +102,14 @@ module ServerlessRedirector
     def bucket
       @bucket ||= begin
         client = Aws::S3::Client.new
-        region = client.get_bucket_location(bucket: bucket_name).location_constraint
-        regional_client = Aws::S3::Client.new(region: region)
+        region = @options['client'] || client.get_bucket_location(bucket: bucket_name).location_constraint
+
+        accelerate = @options['accelerate'] == "true"
+
+        regional_client = Aws::S3::Client.new(
+          region: region,
+          use_accelerate_endpoint: accelerate,
+        )
         resource = Aws::S3::Resource.new(client: regional_client)
         resource.bucket bucket_name
       end
