@@ -63,7 +63,7 @@ module ServerlessRedirector
       @bucket_name = uri.host
       @prefix = uri.path.to_s.empty? ? nil : ::File.join(uri.path[1..-1], "")
       @options = CGI.parse(uri.query || "").each_with_object({}) do |(key, values), out|
-        out[key] = values.lastß
+        out[key] = values.last
       end
     end
 
