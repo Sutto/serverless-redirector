@@ -13,7 +13,7 @@ module ServerlessRedirector
                   :manifest_path,   # Where can we find out manifest?
                   :log_path,        # If present, where do we log? (STDOUT, by default)
                   :dry_run,         # Is this a dry run?
-                  :skip_deletes,    # Deletes have a special ordering to take place to avoid downtime.
+                  :skip_deletes     # Deletes have a special ordering to take place to avoid downtime.
 
     def initialize(options = {})
       @dry_run = false
