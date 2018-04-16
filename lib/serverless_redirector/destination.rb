@@ -103,7 +103,7 @@ module ServerlessRedirector
       @bucket ||= begin
         client = Aws::S3::Client.new
         region = @options['region'] || begin
-          constraint = ( || client).get_bucket_location(
+          constraint = client.get_bucket_location(
             bucket: bucket_name,
           ).location_constraint
 
