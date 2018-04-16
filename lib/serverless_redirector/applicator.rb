@@ -15,7 +15,7 @@ module ServerlessRedirector
       case operation
       when ServerlessRedirector::Operations::RemoveRedirect
         destination.remove_key operation.redirect.path
-      when ServerlessRedirector::Operations::CreateRedirect, ServerlessRedirector::Operations::UpdateRedirect
+      when ServerlessRedirector::Operations::CreateRedirect, ServerlessRedirector::Operations::UpdateDestination
         rendered = ServerlessRedirector::Renderer.new('redirect.erb').render(url: operation.redirect.url)
         destination.write_key operation.redirect.path, operation.redirect.url, rendered
       end

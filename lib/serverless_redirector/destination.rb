@@ -102,7 +102,13 @@ module ServerlessRedirector
     def bucket
       @bucket ||= begin
         client = Aws::S3::Client.new
-        region = @options['client'] || client.get_bucket_location(bucket: bucket_name).location_constraint
+        region = @options['region'] || begin
+          constraint = ( || client).get_bucket_location(
+            bucket: bucket_name,
+          ).location_constraint
+
+          normalise_constraint_to_region(constraint)
+        end
 
         accelerate = @options['accelerate'] == "true"
 
@@ -112,6 +118,17 @@ module ServerlessRedirector
         )
         resource = Aws::S3::Resource.new(client: regional_client)
         resource.bucket bucket_name
+      end
+    end
+
+    def normalise_constraint_to_region(constraint)
+      case constraint
+      when '', nil
+        'us-east-1'
+      when 'EU'
+        'eu-west-1'
+      else
+        constraint
       end
     end
 
